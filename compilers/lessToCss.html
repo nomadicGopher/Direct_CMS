@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html {
+            background-color: black;
+            color: white;
+        }
+        #css-output {
+            white-space: pre;
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    <title>LESS to CSS Compiler</title>
+    <link rel="stylesheet/less" type="text/css" href="/web/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/less"></script>
+</head>
+<body>
+    <div id="css-output"></div>
+
+    <script>
+        function displayCSS() {
+            fetch('/web/styles.css')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(css => {
+                    document.getElementById('css-output').textContent = css; // Display the CSS content
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        window.onload = displayCSS;
+    </script>
+</body>
+</html>
