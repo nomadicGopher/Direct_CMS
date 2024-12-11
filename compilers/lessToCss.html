@@ -77,7 +77,6 @@
                 <td>
                     <button class="button" id="copy-path-button">Copy .less directory-path: <br /><span
                             id="path-preview"></span></button>
-                    <br />
                     <button class="button" id="download-button">Download as styles.css.min</button>
                     <br />
                 </td>
@@ -86,7 +85,7 @@
     </div>
     <script>
         // Developer modifiable variables
-        const projectRoot = "/home/pi/go/src/github.com/nomadicGopher/DirectCMS"; //: /home/$USER/go/src/github.com/GITHUB_USER/GITHUB_REPO
+        const projectRoot = ""; // Set the full path if you want to use the directory-path copy button, otherise it will not be helpful & will therefor hidden. ie. /home/pi/go/src/github.com/nomadicGopher/DirectCMS
         const lessFilePath = '/web/styles.less';
 
         // Function to get trimmed path
@@ -116,12 +115,20 @@
                             // Add event listeners to buttons
                             document.getElementById('copy-button').addEventListener('click', copyCssToClipboard);
                             document.getElementById('download-button').addEventListener('click', downloadCss);
-                            document.getElementById('copy-path-button').addEventListener('click', copyPathToClipboard);
 
-                            // Update path preview
+                            /// Update path preview
                             const pathPreviewText = projectRoot + lessFilePath;
                             const trimmedPath = getTrimmedPath(pathPreviewText);
                             document.getElementById('path-preview').textContent = trimmedPath;
+
+                            // Show or hide copy path button based on project root
+                            if (projectRoot !== "") {
+                                document.getElementById('copy-path-button').style.display = 'block';
+                                document.getElementById('copy-path-button').addEventListener('click', copyPathToClipboard);
+                            } else {
+                                document.getElementById('copy-path-button').style.display = 'none';
+                                document.getElementById('copy-path-button').removeEventListener('click', copyPathToClipboard);
+                            }
                         }
                     });
                 })
@@ -165,6 +172,7 @@
 
         // Compile LESS on page load
         window.onload = compileLESS;
+
     </script>
 </body>
 
