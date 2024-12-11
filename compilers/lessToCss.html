@@ -1,44 +1,171 @@
-<!DOCTYPE html>
 <html>
+
 <head>
     <style>
         html {
             background-color: black;
             color: white;
         }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
         #css-output {
-            white-space: pre;
-            margin: 20px;
+            text-align: center;
+            white-space: pre-wrap;
             padding: 10px;
             border: 1px solid white;
             background-color: rgba(255, 255, 255, 0.1);
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            width: 90%;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            width: 75%;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #3e8e41;
+        }
+
+        .button-table {
+            width: 100%;
+        }
+
+        .button-table td {
+            text-align: center;
         }
     </style>
     <title>LESS to CSS Compiler</title>
-    <link rel="stylesheet/less" type="text/css" href="/web/styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/less"></script>
 </head>
+
 <body>
     <div id="css-output"></div>
-
+    <br />
+    <div class="button-container">
+        <table class="button-table">
+            <tr>
+                <td>
+                    <button class="button" id="copy-button">Copy css.min to clipboard</button>
+                </td>
+                <td>
+                    <button class="button" id="copy-path-button">Copy .less directory-path: <br /><span
+                            id="path-preview"></span></button>
+                    <br />
+                    <button class="button" id="download-button">Download as styles.css.min</button>
+                    <br />
+                </td>
+            </tr>
+        </table>
+    </div>
     <script>
-        function displayCSS() {
-            fetch('/web/styles.css')
+        // Developer modifiable variables
+        const projectRoot = "/home/pi/go/src/github.com/nomadicGopher/DirectCMS"; //: /home/$USER/go/src/github.com/GITHUB_USER/GITHUB_REPO
+        const lessFilePath = '/web/styles.less';
+
+        // Function to get trimmed path
+        function getTrimmedPath(path) {
+            return path.slice(0, path.lastIndexOf('/') + 1);
+        }
+
+        // Function to compile LESS
+        function compileLESS() {
+            // Fetch LESS file
+            fetch(lessFilePath)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
                     return response.text();
                 })
-                .then(css => {
-                    document.getElementById('css-output').textContent = css; // Display the CSS content
+                .then(lessContent => {
+                    // Render LESS to CSS
+                    less.render(lessContent, { compress: true, cleancss: true }, (error, css) => {
+                        if (error) {
+                            console.error('Error compiling LESS:', error);
+                        } else {
+                            // Display compiled CSS
+                            document.getElementById('css-output').textContent = css.css;
+
+                            // Add event listeners to buttons
+                            document.getElementById('copy-button').addEventListener('click', copyCssToClipboard);
+                            document.getElementById('download-button').addEventListener('click', downloadCss);
+                            document.getElementById('copy-path-button').addEventListener('click', copyPathToClipboard);
+
+                            // Update path preview
+                            const pathPreviewText = projectRoot + lessFilePath;
+                            const trimmedPath = getTrimmedPath(pathPreviewText);
+                            document.getElementById('path-preview').textContent = trimmedPath;
+                        }
+                    });
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
                 });
         }
 
-        window.onload = displayCSS;
+        // Function to copy CSS to clipboard
+        function copyCssToClipboard() {
+            const textArea = document.createElement('textarea');
+            textArea.value = document.getElementById('css-output').textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            console.log('Copied to clipboard');
+        }
+
+        // Function to download CSS
+        function downloadCss() {
+            const blob = new Blob([document.getElementById('css-output').textContent], { type: 'text/css' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'styles.css.min';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Function to copy path to clipboard
+        function copyPathToClipboard() {
+            const textArea = document.createElement('textarea');
+            textArea.value = document.getElementById('path-preview').textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            console.log('Copied project path to clipboard');
+        }
+
+        // Compile LESS on page load
+        window.onload = compileLESS;
     </script>
 </body>
+
 </html>
