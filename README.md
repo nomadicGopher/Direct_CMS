@@ -1,5 +1,8 @@
-* Source code comments are formatted for [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments).
+## End User Requirements
+End users should only make code changes or add files in the `user` directory. All other source code should remain as-is in order to preserve the sructure and security of the application.
 
+## Comments
+* Source code comments are formatted for [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments).
 
 ## To Do
 * If rendering a custom/....html file directly in a browser, fetch stadard & custom styles & JS, render a blacked out page for MVP with dynamic content.
