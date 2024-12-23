@@ -1,5 +1,5 @@
 ## End User Requirements
-End users should only make code changes or add files in the `user` directory. All other source code should remain as-is in order to preserve the sructure and security of the application.
+End users should only make code changes or add files in the `userContent` directory. All other source code should remain as-is in order to preserve the sructure and security of the application.
 
 ## Comments
 * Source code comments are formatted for [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments).
@@ -100,7 +100,7 @@ func newPost(postTitle string) Post {
 	post.ID = &postID
 
 	// post.LastUpdated
-	if info, err := os.Stat("/user/posts/" + *post.Title); err == nil {
+	if info, err := os.Stat("/userContent/posts/" + *post.Title); err == nil {
 		lastUpdated := info.ModTime()
 		post.LastUpdated = &lastUpdated
 	} else {

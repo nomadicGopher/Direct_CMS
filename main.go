@@ -36,7 +36,7 @@ func main() {
 
 // ---------- ACTIONS ----------
 func serveUserResources(w http.ResponseWriter, r *http.Request) {
-	basePath := "/user/"
+	basePath := "/userContent/"
 	files := []string{"logo.*", "sitemap.xml", "custom.css", "custom.js", "favicon.*"}
 
 	for _, pattern := range files {
