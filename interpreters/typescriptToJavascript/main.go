@@ -1,24 +1,25 @@
-// TODO
-
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	_ "github.com/clarkmcc/go-typescript"
-	_ "github.com/dop251/goja"
+	"github.com/clarkmcc/go-typescript"
+	"github.com/dop251/goja"
 )
 
 var (
 	err    error
 	tsCode []byte
 	result goja.Value
+	filePath string
 )
 
 func main() {
-	filePath := "/web/scripts.ts"
+	flag.StringVar(&filePath, "file", "/web/scripts.ts", "path to the TypeScript file")
+	flag.Parse()
 
 	if tsCode, err = os.ReadFile(filePath); err != nil {
 		fmt.Println("Error reading file:", err)
