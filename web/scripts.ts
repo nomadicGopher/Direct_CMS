@@ -1,14 +1,29 @@
-class Person {
-  name: string;
-
-  constructor(name: string) {
-      this.name = name
-  }
-
-  public greet(): string {
-      return `Hello ${this.name}!`
-  }
+declare class Go {
+  constructor();
+  run(instance: WebAssembly.Instance): void;
+  importObject: any; // ? Specify a more precise type if known
 }
 
-const me = new Person("John Doe")
-me.greet()
+type WasmInstantiatedSource = WebAssembly.WebAssemblyInstantiatedSource;
+
+const go: Go = new Go();
+
+function init(wasmObj: WasmInstantiatedSource): void {
+  go.run(wasmObj.instance);
+}
+
+if ('instantiateStreaming' in WebAssembly) {
+  WebAssembly.instantiateStreaming(fetch("go.wasm"), go.importObject)
+      .then((wasmObj: WasmInstantiatedSource) => {
+          init(wasmObj);
+      });
+} else {
+  fetch("go.wasm")
+      .then((resp: Response) => resp.arrayBuffer())
+      .then((bytes: ArrayBuffer) =>
+          WebAssembly.instantiate(bytes, go.importObject)
+              .then((wasmObj: WasmInstantiatedSource) => {
+                  init(wasmObj);
+              })
+      );
+}
