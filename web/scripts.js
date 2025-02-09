@@ -1,6 +1,5 @@
 'use strict';
 
-let wasm;
 const go = new Go();
 
 function init(wasmObj) {

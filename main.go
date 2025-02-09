@@ -1,59 +1,33 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
-	"os"
 	"path/filepath"
 )
 
-var (
-	err error
-	logFile *os.File
-)
-
-const logFileName = "appSession.log"
-
 func main() {
-	if logFile, err = os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o666); err != nil {
-		log.SetOutput(os.Stdout)
-		log.Println("Failed to open log file: ", err)
-	} else {
-		log.SetOutput(logFile)
-	}
-	defer logFile.Close()
-	log.Println(`----------------------------------------------------------------------------------------------------\n
-		App session started.`)
-
-	if err = http.ListenAndServe(":8080", nil); err != nil {
-		log.Println("Failed to start server: ", err)
-	}
+	fmt.Println("Start")
 
 	http.HandleFunc("/", serveUserResources)
 
-	select {} // Keep session open to serve functions over WASM.
+	if errServer := http.ListenAndServe(":8080", nil); errServer != nil {
+		fmt.Println("Failed to start server: ", errServer)
+	}
+
+	select {}
 }
 
-// ---------- ACTIONS ----------
 func serveUserResources(w http.ResponseWriter, r *http.Request) {
-	basePath := "/userContent/"
 	files := []string{"logo.*", "sitemap.xml", "custom.css", "custom.js", "favicon.*"}
 
 	for _, pattern := range files {
-		matches, err := filepath.Glob(filepath.Join(basePath, pattern))
-		if err != nil {
-			log.Printf("Error checking existence of file pattern %s: %v", pattern, err)
+		found, fileErr := filepath.Glob(filepath.Join("userContent", pattern))
+		if fileErr != nil {
+			http.Error(w, fmt.Sprintf("Error finding file pattern %s: %v", pattern, fileErr), http.StatusInternalServerError)
 			continue
 		}
 
-		if len(matches) > 0 {
-			http.ServeFile(w, r, matches[0])
-			return
-		}
+		http.ServeFile(w, r, found[0])
 	}
-
-	log.Println("None of the custom files exist.")
-	http.NotFound(w, r)
 }
-
-// ---------- UTILITIES ----------
