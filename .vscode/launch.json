@@ -3,11 +3,14 @@
   "configurations": [
     {
       "name": "Web",
-      "type": "msedge",
-      "preLaunchTask": "build",
+      "type": "pwa-msedge",
       "request": "launch",
+      "preLaunchTask": "wasm",
       "url": "http://localhost:8080/index.html",
-      "webRoot": "/web/index.html"
+      "webRoot": "${workspaceFolder:DirectCMS}/web",
+      "runtimeArgs": [
+        "--enable-features=NetworkService,NetworkServiceInProcess"
+      ]
     }
   ]
 }

@@ -5,11 +5,14 @@
     {
       "name": "Golang",
       "type": "go",
-      "preLaunchTask": "build",
       "request": "launch",
+      "preLaunchTask": "wasm",
       "mode": "debug",
-      "program": "main.go",
+      "program": "${workspaceFolder:DirectCMS}/main.go",
       "hideSystemGoroutines": true
+      //"args": [
+        //""
+      //],
       //,"host": "localhost",
       //"port": 8080
     }
