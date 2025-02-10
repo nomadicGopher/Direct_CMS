@@ -1,0 +1,17 @@
+{
+  //! BUG: Failed to launch, could not launch process: not an executable file
+  "version": "0.2.0", // https://go.microsoft.com/fwlink/?linkid=830387
+  "configurations": [
+    {
+      "name": "Golang",
+      "type": "go",
+      "preLaunchTask": "build",
+      "request": "launch",
+      "mode": "debug",
+      "program": "main.go",
+      "hideSystemGoroutines": true
+      //,"host": "localhost",
+      //"port": 8080
+    }
+  ]
+}

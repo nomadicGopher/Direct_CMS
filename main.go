@@ -1,33 +1,40 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"path/filepath"
 )
 
 func main() {
-	fmt.Println("Start")
+	flag.Parse()
 
 	http.HandleFunc("/", serveUserResources)
 
-	if errServer := http.ListenAndServe(":8080", nil); errServer != nil {
-		fmt.Println("Failed to start server: ", errServer)
+	fmt.Println("Serving user defined files...")
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		fmt.Println("Failed to start server: ", err)
 	}
+
+	fmt.Println("User defined files served.")
 
 	select {}
 }
 
 func serveUserResources(w http.ResponseWriter, r *http.Request) {
-	files := []string{"logo.*", "sitemap.xml", "custom.css", "custom.js", "favicon.*"}
+	filePatterns := []string{"logo.*", "sitemap.xml", "custom.css", "custom.js", "favicon.*"}
 
-	for _, pattern := range files {
-		found, fileErr := filepath.Glob(filepath.Join("userContent", pattern))
-		if fileErr != nil {
-			http.Error(w, fmt.Sprintf("Error finding file pattern %s: %v", pattern, fileErr), http.StatusInternalServerError)
+	for _, filePattern := range filePatterns {
+		file, err := filepath.Glob(filepath.Join("userContent", filePattern))
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error finding file pattern %s: %v", filePattern, err), http.StatusInternalServerError)
 			continue
 		}
 
-		http.ServeFile(w, r, found[0])
+		fmt.Println("Serving: 'userContent/" + file[0] + "'")
+
+		http.ServeFile(w, r, "userContent/"+file[0])
 	}
 }
