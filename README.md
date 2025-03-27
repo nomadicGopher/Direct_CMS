@@ -7,3 +7,6 @@ End users should only make code changes or add files in the `userContent` direct
 
 ## Comments
 * Source code comments are formatted for [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments).
+
+## Dev Notes
+* Dev server if needed (using Python) `python -m http.server 8080`
