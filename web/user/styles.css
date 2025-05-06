@@ -1,0 +1,17 @@
+* {
+  background-color: #2C2C2C;
+  color: #fff;
+  text-align: center;
+}
+
+a,
+a:visited,
+a:hover,
+a:active {
+  color: #fff;
+  text-decoration: none; /* optional, for visibility */
+}
+
+/*aside {
+  max-width:20%
+}*/

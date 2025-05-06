@@ -1,0 +1,11 @@
+{
+  "metaData": {
+    "title": "Site Title"
+    ,"description": "Description."
+    ,"keywords": [
+      "Keyword"
+    ]
+    ,"author": "Author"
+    ,"social-thumbnail": "/path/social-thumbnail.img"
+  }
+}
